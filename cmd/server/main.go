@@ -4,11 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	ristcachedv1 "github.com/tachunwu/ristcached/pkg/proto/ristcached/ristcachedv1"
-	"github.com/tachunwu/ristcached/pkg/proto/ristcached/ristcachedv1/ristcachedv1connect"
+	ristcachedv1 "github.com/tachunwu/ristcached/pkg/proto/ristcached/v1"
 	"github.com/tachunwu/ristcached/pkg/proto/ristcached/v1/ristcachedv1connect"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 
 	"github.com/bufbuild/connect-go"
 	"golang.org/x/net/http2"
