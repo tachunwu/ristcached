@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package ristcached.v1;
+
+option go_package = "github.com/tachunwu/ristcached/pkg/proto/ristcached/v1;ristcachedv1";
+
+message KeyValue {
+    string key = 1;
+    bytes value = 2;
+    int64 cost = 3;
+    int64 ttl = 4;
+}
+
+message GetRequest {
+    string key = 1;
+}
+
+message GetResponse {
+    bytes value = 1;
+    bool found = 2;
+}
+
+message SetRequest {
+    KeyValue item = 1;
+}
+
+message SetResponse {
+    bool added = 1;
+}
+
+message SetWithTTLRequest {
+    KeyValue item = 1;
+}
+
+message SetWithTTLResponse {
+    bool added = 1;
+}
+
+message DelRequest {
+    string key = 1;
+}
+
+message DelResponse {}
+
+message GetTTLRequest {
+    string key = 1;
+}
+
+message GetTTLResponse {
+    int64 ttl = 1;
+    bool found = 2;
+}
+
+message UpdateMaxCostRequest {
+    int64 max_cost = 1;
+}
+
+message UpdateMaxCostResponse {}
+
+message MaxCostRequest {}
+
+message MaxCostResponse {
+    int64 max_cost = 1;
+}
+
+message ClearRequest {}
+
+message ClearResponse {}
+
+
+service RistcachedService {
+    rpc Get (GetRequest) returns (GetResponse) {}
+    rpc Set (SetRequest) returns (SetResponse) {}
+    rpc SetWithTTL (SetWithTTLRequest) returns (SetWithTTLResponse) {}
+    rpc Del (DelRequest) returns (DelResponse) {}
+    rpc GetTTL (GetTTLRequest) returns (GetTTLResponse) {}
+    rpc MaxCost (MaxCostRequest) returns (MaxCostResponse) {}
+    rpc UpdateMaxCost (UpdateMaxCostRequest) returns (UpdateMaxCostResponse) {}
+    rpc Clear (ClearRequest) returns (ClearResponse) {}
+}
+
+
+service MetricsService {
+  rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {}
+}
+
+message GetMetricsRequest {}
+
+message GetMetricsResponse {
+  uint64 cost_added = 1;
+  uint64 cost_evicted = 2;
+  uint64 gets_dropped = 3;
+  uint64 gets_kept = 4;
+  uint64 hits = 5;
+  uint64 keys_added = 6;
+  uint64 keys_evicted = 7;
+  uint64 keys_updated = 8;
+  uint64 misses = 9;
+  float ratio = 10;
+  uint64 sets_dropped = 11;
+  uint64 sets_rejected = 12;
+  string string = 13;
+}
