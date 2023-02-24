@@ -4,6 +4,19 @@ package ristcached.v1;
 
 option go_package = "github.com/tachunwu/ristcached/pkg/proto/ristcached/v1;ristcachedv1";
 
+service RistcachedService {
+    rpc Get (GetRequest) returns (GetResponse) {}
+    rpc Set (SetRequest) returns (SetResponse) {}
+    rpc SetWithTTL (SetWithTTLRequest) returns (SetWithTTLResponse) {}
+    rpc Del (DelRequest) returns (DelResponse) {}
+    rpc GetTTL (GetTTLRequest) returns (GetTTLResponse) {}
+    rpc MaxCost (MaxCostRequest) returns (MaxCostResponse) {}
+    rpc UpdateMaxCost (UpdateMaxCostRequest) returns (UpdateMaxCostResponse) {}
+    rpc Clear (ClearRequest) returns (ClearResponse) {}
+    rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {}
+}
+
+
 message KeyValue {
     string key = 1;
     bytes value = 2;
@@ -66,23 +79,6 @@ message MaxCostResponse {
 message ClearRequest {}
 
 message ClearResponse {}
-
-
-service RistcachedService {
-    rpc Get (GetRequest) returns (GetResponse) {}
-    rpc Set (SetRequest) returns (SetResponse) {}
-    rpc SetWithTTL (SetWithTTLRequest) returns (SetWithTTLResponse) {}
-    rpc Del (DelRequest) returns (DelResponse) {}
-    rpc GetTTL (GetTTLRequest) returns (GetTTLResponse) {}
-    rpc MaxCost (MaxCostRequest) returns (MaxCostResponse) {}
-    rpc UpdateMaxCost (UpdateMaxCostRequest) returns (UpdateMaxCostResponse) {}
-    rpc Clear (ClearRequest) returns (ClearResponse) {}
-}
-
-
-service MetricsService {
-  rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse) {}
-}
 
 message GetMetricsRequest {}
 
