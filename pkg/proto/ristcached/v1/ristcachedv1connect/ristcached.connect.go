@@ -23,8 +23,6 @@ const _ = connect_go.IsAtLeastVersion0_1_0
 const (
 	// RistcachedServiceName is the fully-qualified name of the RistcachedService service.
 	RistcachedServiceName = "ristcached.v1.RistcachedService"
-	// MetricsServiceName is the fully-qualified name of the MetricsService service.
-	MetricsServiceName = "ristcached.v1.MetricsService"
 )
 
 // RistcachedServiceClient is a client for the ristcached.v1.RistcachedService service.
@@ -37,6 +35,7 @@ type RistcachedServiceClient interface {
 	MaxCost(context.Context, *connect_go.Request[v1.MaxCostRequest]) (*connect_go.Response[v1.MaxCostResponse], error)
 	UpdateMaxCost(context.Context, *connect_go.Request[v1.UpdateMaxCostRequest]) (*connect_go.Response[v1.UpdateMaxCostResponse], error)
 	Clear(context.Context, *connect_go.Request[v1.ClearRequest]) (*connect_go.Response[v1.ClearResponse], error)
+	GetMetrics(context.Context, *connect_go.Request[v1.GetMetricsRequest]) (*connect_go.Response[v1.GetMetricsResponse], error)
 }
 
 // NewRistcachedServiceClient constructs a client for the ristcached.v1.RistcachedService service.
@@ -89,6 +88,11 @@ func NewRistcachedServiceClient(httpClient connect_go.HTTPClient, baseURL string
 			baseURL+"/ristcached.v1.RistcachedService/Clear",
 			opts...,
 		),
+		getMetrics: connect_go.NewClient[v1.GetMetricsRequest, v1.GetMetricsResponse](
+			httpClient,
+			baseURL+"/ristcached.v1.RistcachedService/GetMetrics",
+			opts...,
+		),
 	}
 }
 
@@ -102,6 +106,7 @@ type ristcachedServiceClient struct {
 	maxCost       *connect_go.Client[v1.MaxCostRequest, v1.MaxCostResponse]
 	updateMaxCost *connect_go.Client[v1.UpdateMaxCostRequest, v1.UpdateMaxCostResponse]
 	clear         *connect_go.Client[v1.ClearRequest, v1.ClearResponse]
+	getMetrics    *connect_go.Client[v1.GetMetricsRequest, v1.GetMetricsResponse]
 }
 
 // Get calls ristcached.v1.RistcachedService.Get.
@@ -144,6 +149,11 @@ func (c *ristcachedServiceClient) Clear(ctx context.Context, req *connect_go.Req
 	return c.clear.CallUnary(ctx, req)
 }
 
+// GetMetrics calls ristcached.v1.RistcachedService.GetMetrics.
+func (c *ristcachedServiceClient) GetMetrics(ctx context.Context, req *connect_go.Request[v1.GetMetricsRequest]) (*connect_go.Response[v1.GetMetricsResponse], error) {
+	return c.getMetrics.CallUnary(ctx, req)
+}
+
 // RistcachedServiceHandler is an implementation of the ristcached.v1.RistcachedService service.
 type RistcachedServiceHandler interface {
 	Get(context.Context, *connect_go.Request[v1.GetRequest]) (*connect_go.Response[v1.GetResponse], error)
@@ -154,6 +164,7 @@ type RistcachedServiceHandler interface {
 	MaxCost(context.Context, *connect_go.Request[v1.MaxCostRequest]) (*connect_go.Response[v1.MaxCostResponse], error)
 	UpdateMaxCost(context.Context, *connect_go.Request[v1.UpdateMaxCostRequest]) (*connect_go.Response[v1.UpdateMaxCostResponse], error)
 	Clear(context.Context, *connect_go.Request[v1.ClearRequest]) (*connect_go.Response[v1.ClearResponse], error)
+	GetMetrics(context.Context, *connect_go.Request[v1.GetMetricsRequest]) (*connect_go.Response[v1.GetMetricsResponse], error)
 }
 
 // NewRistcachedServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -203,6 +214,11 @@ func NewRistcachedServiceHandler(svc RistcachedServiceHandler, opts ...connect_g
 		svc.Clear,
 		opts...,
 	))
+	mux.Handle("/ristcached.v1.RistcachedService/GetMetrics", connect_go.NewUnaryHandler(
+		"/ristcached.v1.RistcachedService/GetMetrics",
+		svc.GetMetrics,
+		opts...,
+	))
 	return "/ristcached.v1.RistcachedService/", mux
 }
 
@@ -241,62 +257,6 @@ func (UnimplementedRistcachedServiceHandler) Clear(context.Context, *connect_go.
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("ristcached.v1.RistcachedService.Clear is not implemented"))
 }
 
-// MetricsServiceClient is a client for the ristcached.v1.MetricsService service.
-type MetricsServiceClient interface {
-	GetMetrics(context.Context, *connect_go.Request[v1.GetMetricsRequest]) (*connect_go.Response[v1.GetMetricsResponse], error)
-}
-
-// NewMetricsServiceClient constructs a client for the ristcached.v1.MetricsService service. By
-// default, it uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses,
-// and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the
-// connect.WithGRPC() or connect.WithGRPCWeb() options.
-//
-// The URL supplied here should be the base URL for the Connect or gRPC server (for example,
-// http://api.acme.com or https://acme.com/grpc).
-func NewMetricsServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts ...connect_go.ClientOption) MetricsServiceClient {
-	baseURL = strings.TrimRight(baseURL, "/")
-	return &metricsServiceClient{
-		getMetrics: connect_go.NewClient[v1.GetMetricsRequest, v1.GetMetricsResponse](
-			httpClient,
-			baseURL+"/ristcached.v1.MetricsService/GetMetrics",
-			opts...,
-		),
-	}
-}
-
-// metricsServiceClient implements MetricsServiceClient.
-type metricsServiceClient struct {
-	getMetrics *connect_go.Client[v1.GetMetricsRequest, v1.GetMetricsResponse]
-}
-
-// GetMetrics calls ristcached.v1.MetricsService.GetMetrics.
-func (c *metricsServiceClient) GetMetrics(ctx context.Context, req *connect_go.Request[v1.GetMetricsRequest]) (*connect_go.Response[v1.GetMetricsResponse], error) {
-	return c.getMetrics.CallUnary(ctx, req)
-}
-
-// MetricsServiceHandler is an implementation of the ristcached.v1.MetricsService service.
-type MetricsServiceHandler interface {
-	GetMetrics(context.Context, *connect_go.Request[v1.GetMetricsRequest]) (*connect_go.Response[v1.GetMetricsResponse], error)
-}
-
-// NewMetricsServiceHandler builds an HTTP handler from the service implementation. It returns the
-// path on which to mount the handler and the handler itself.
-//
-// By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
-// and JSON codecs. They also support gzip compression.
-func NewMetricsServiceHandler(svc MetricsServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle("/ristcached.v1.MetricsService/GetMetrics", connect_go.NewUnaryHandler(
-		"/ristcached.v1.MetricsService/GetMetrics",
-		svc.GetMetrics,
-		opts...,
-	))
-	return "/ristcached.v1.MetricsService/", mux
-}
-
-// UnimplementedMetricsServiceHandler returns CodeUnimplemented from all methods.
-type UnimplementedMetricsServiceHandler struct{}
-
-func (UnimplementedMetricsServiceHandler) GetMetrics(context.Context, *connect_go.Request[v1.GetMetricsRequest]) (*connect_go.Response[v1.GetMetricsResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("ristcached.v1.MetricsService.GetMetrics is not implemented"))
+func (UnimplementedRistcachedServiceHandler) GetMetrics(context.Context, *connect_go.Request[v1.GetMetricsRequest]) (*connect_go.Response[v1.GetMetricsResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("ristcached.v1.RistcachedService.GetMetrics is not implemented"))
 }

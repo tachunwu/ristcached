@@ -23,6 +23,7 @@ func NewRistcachedServer() *RistcachedServer {
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     2 << 30, // maximum cost of cache (2GB).
 		BufferItems: 64,      // number of keys per Get buffer.
+		Metrics:     true,
 	})
 	if err != nil {
 		panic(err)
@@ -144,5 +145,24 @@ func (s *RistcachedServer) UpdateMaxCost(ctx context.Context, req *connect.Reque
 func (s *RistcachedServer) Clear(ctx context.Context, req *connect.Request[ristcachedv1.ClearRequest]) (*connect.Response[ristcachedv1.ClearResponse], error) {
 	s.cache.Clear()
 	res := connect.NewResponse(&ristcachedv1.ClearResponse{})
+	return res, nil
+}
+
+func (s *RistcachedServer) GetMetrics(ctx context.Context, req *connect.Request[ristcachedv1.GetMetricsRequest]) (*connect.Response[ristcachedv1.GetMetricsResponse], error) {
+
+	res := connect.NewResponse(&ristcachedv1.GetMetricsResponse{
+		CostAdded:    s.cache.Metrics.CostAdded(),
+		CostEvicted:  s.cache.Metrics.CostEvicted(),
+		GetsDropped:  s.cache.Metrics.GetsDropped(),
+		GetsKept:     s.cache.Metrics.GetsKept(),
+		Hits:         s.cache.Metrics.Hits(),
+		KeysAdded:    s.cache.Metrics.KeysAdded(),
+		KeysEvicted:  s.cache.Metrics.KeysEvicted(),
+		KeysUpdated:  s.cache.Metrics.KeysUpdated(),
+		Misses:       s.cache.Metrics.Misses(),
+		SetsDropped:  s.cache.Metrics.SetsDropped(),
+		SetsRejected: s.cache.Metrics.SetsRejected(),
+		Ratio:        float32(s.cache.Metrics.Ratio()),
+	})
 	return res, nil
 }

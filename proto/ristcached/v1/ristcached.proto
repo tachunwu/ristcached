@@ -95,5 +95,4 @@ message GetMetricsResponse {
   float ratio = 10;
   uint64 sets_dropped = 11;
   uint64 sets_rejected = 12;
-  string string = 13;
 }
